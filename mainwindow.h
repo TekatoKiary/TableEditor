@@ -17,5 +17,6 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QSize sizeWindow = QSize(800, 700);
 };
 #endif // MAINWINDOW_H
