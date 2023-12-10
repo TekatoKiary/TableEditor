@@ -1,13 +1,10 @@
 #include "csvfilewriter.h"
 
-#include <fstream>
 
-using namespace std;
-
-CsvFileWriter::CsvFileWriter(string fileName)
+CsvFileWriter::CsvFileWriter(QString fileName)
 {
     this->fileName = fileName;
-    file.open(fileName);
+    file.open(fileName.toStdString());
 }
 
 CsvFileWriter::~CsvFileWriter()
@@ -15,16 +12,16 @@ CsvFileWriter::~CsvFileWriter()
     file.close();
 }
 
-void CsvFileWriter::write(QList<string> element)
+void CsvFileWriter::write(QList<QString> element)
 {
     file << joinElement(element) << endl;
 }
 
-string CsvFileWriter::joinElement(QList<string> element)
+string CsvFileWriter::joinElement(QList<QString> element)
 {
     string joinedElement;
-    for (int index = 0; index <= element.size() - 1; index++)
-        joinedElement += element[index] + string(1, delimiter);
-    element += element[element.size() - 1];
+    for (int index = 0; index < element.size() - 1; index++)
+        joinedElement += element[index].toStdString() + string(1, delimiter);
+    joinedElement += element[element.size() - 1].toStdString();
     return joinedElement;
 }

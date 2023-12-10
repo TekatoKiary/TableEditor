@@ -7,26 +7,27 @@
 
 using namespace std;
 
+
 class CsvFileReader
 {
 
 public:
-    CsvFileReader(string fileName);
+    CsvFileReader(QString fileName);
 
-    string getFileName();
+    QString getFileName();
 
-    QList<string> getTitles();
+    QList<QString> getTitles();
 
     int getColumnCount();
 
     int getElementsCount();
 
-    QList<QList<string>> getElements();
+    QList<QList<QString>> getElements();
 
 private:
-    QList<string> titles;
-    string fileName;
-    QList<QList<string>> elements;
+    QList<QString> titles;
+    QString fileName;
+    QList<QList<QString>> elements;
     char delimiter = ',';
 
     void readFile();
@@ -35,7 +36,7 @@ private:
 
     void readElements(ifstream *file);
 
-    QList<string> splitElement(string element);
+    QList<QString> splitElement(QString element);
 
 };
 

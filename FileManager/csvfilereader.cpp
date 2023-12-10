@@ -1,20 +1,18 @@
 #include "csvfilereader.h"
 
-using namespace std;
 
-
-CsvFileReader::CsvFileReader(string fileName)
+CsvFileReader::CsvFileReader(QString fileName)
 {
     this->fileName = fileName;
     readFile();
 }
 
-string CsvFileReader::getFileName()
+QString CsvFileReader::getFileName()
 {
     return fileName;
 }
 
-QList<string> CsvFileReader::getTitles()
+QList<QString> CsvFileReader::getTitles()
 {
     return titles;
 }
@@ -29,14 +27,14 @@ int CsvFileReader::getElementsCount()
     return elements.count();
 }
 
-QList<QList<string>> CsvFileReader::getElements()
+QList<QList<QString>> CsvFileReader::getElements()
 {
     return elements;
 }
 
 void CsvFileReader::readFile()
 {
-    ifstream file(fileName);
+    ifstream file(fileName.toStdString());
     readTitles(&file);
     readElements(&file);
     file.close();
@@ -44,26 +42,26 @@ void CsvFileReader::readFile()
 
 void CsvFileReader::readTitles(ifstream *file)
 {
-    std::string line, nameTitle;
+    string line, nameTitle;
     getline(*file, line);
     stringstream stream(line);
     while(getline(stream, nameTitle, delimiter))
-        titles.append(nameTitle);
+        titles.append(QString::fromStdString(nameTitle));
 }
 
 void CsvFileReader::readElements(ifstream *file)
 {
     string element;
     while(getline(*file, element))
-        elements.append(splitElement(element));
+        elements.append(splitElement(QString::fromStdString(element)));
 }
 
-QList<string> CsvFileReader::splitElement(string element)
+QList<QString> CsvFileReader::splitElement(QString element)
 {
-    QList<string> dividedElement;
+    QList<QString> dividedElement;
     string cell;
-    stringstream stream(element);
+    stringstream stream(element.toStdString());
     while(getline(stream, cell, delimiter))
-        dividedElement.append(cell);
+        dividedElement.append(QString::fromStdString(cell));
     return dividedElement;
 }

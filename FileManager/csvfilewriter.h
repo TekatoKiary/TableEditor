@@ -6,21 +6,22 @@
 
 using namespace std;
 
+
 class CsvFileWriter
 {
 
 public:
-    CsvFileWriter(string fileName);
+    CsvFileWriter(QString fileName);
     ~CsvFileWriter();
 
-    void write(QList<string> element);
+    void write(QList<QString> element);
 
 private:
-    string fileName;
+    QString fileName;
     char delimiter =',';
     ofstream file;
 
-    string joinElement(QList<string> element);
+    string joinElement(QList<QString> element);
 };
 
 #endif // CSVFILEWRITER_H
