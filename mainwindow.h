@@ -15,6 +15,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void openFile();
+
 private:
     Ui::MainWindow *ui;
     QSize sizeWindow = QSize(800, 700);
