@@ -16,7 +16,7 @@ public:
 
     QString getFileName();
 
-    QList<QString> getTitles();
+    QStringList getTitles();
 
     int getColumnCount();
 
@@ -25,7 +25,7 @@ public:
     QList<QList<QString>> getElements();
 
 private:
-    QList<QString> titles;
+    QStringList titles;
     QString fileName;
     QList<QList<QString>> elements;
     char delimiter = ',';
@@ -36,7 +36,7 @@ private:
 
     void readElements(ifstream *file);
 
-    QList<QString> splitElement(QString element);
+    QStringList splitElement(QString element);
 
 };
 

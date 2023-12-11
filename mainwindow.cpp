@@ -9,7 +9,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     setFixedSize(sizeWindow);
     ui->setupUi(this);
-    ui->tableWidget->resizeColumnsToContents();
     ui->tableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
 
@@ -31,13 +30,13 @@ void MainWindow::openFile()
     loadTable(fileReader.getTitles(), fileReader.getElements());
 }
 
-void MainWindow::loadTable(QList<QString> titles, QList<QList<QString>> elements)
+void MainWindow::loadTable(QStringList titles, QList<QList<QString>> elements)
 {
     setTitles(titles);
     setElements(elements);
 }
 
-void MainWindow::setTitles(QList<QString> titles)
+void MainWindow::setTitles(QStringList titles)
 {
     ui->tableWidget->setColumnCount(titles.count());
     ui->tableWidget->setHorizontalHeaderLabels(titles);
@@ -51,8 +50,38 @@ void MainWindow::setElements(QList<QList<QString>> elements)
     for(int rowIndex = 0; rowIndex < elements.size(); rowIndex++)
     {
         ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
-        QList<QString> element = elements[rowIndex];
+        QStringList element = elements[rowIndex];
         for(int columnIndex = 0; columnIndex < element.size(); columnIndex++)
             ui->tableWidget->setItem(rowIndex, columnIndex, new QTableWidgetItem(element[columnIndex]));
     }
+}
+
+void MainWindow::addColumn()
+{
+    bool ok;
+    QString columnName = QInputDialog::getText(
+                this, "Добавление столбца",
+                "Введите название столбца:",
+                QLineEdit::Normal, "Название столбца", &ok
+                );
+    if (ok && !columnName.isEmpty())
+    {
+        QStringList titles = getTitles();
+        titles.append(columnName);
+        setTitles(titles);
+    }
+}
+
+void MainWindow::addElement()
+{
+    ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
+}
+
+
+QStringList MainWindow::getTitles()
+{
+    QStringList headers;
+    for(int index = 0; index < ui->tableWidget->model()->columnCount(); index++)
+        headers.append(ui->tableWidget->model()->headerData(index, Qt::Horizontal).toString());
+    return headers;
 }

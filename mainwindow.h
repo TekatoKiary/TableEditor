@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QList>
 #include <QMainWindow>
 
@@ -22,7 +23,9 @@ public:
 
 private slots:
     void openFile();
+    void addColumn();
 
+    void addElement();
 private:
     Ui::MainWindow *ui;
     QSize sizeWindow = QSize(800, 700);
@@ -31,5 +34,6 @@ private:
 
     void setTitles(QList<QString> titles);
     void setElements(QList<QList<QString> > elements);
+    QList<QString> getTitles();
 };
 #endif // MAINWINDOW_H

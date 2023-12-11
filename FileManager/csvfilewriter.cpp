@@ -12,12 +12,12 @@ CsvFileWriter::~CsvFileWriter()
     file.close();
 }
 
-void CsvFileWriter::write(QList<QString> element)
+void CsvFileWriter::write(QStringList element)
 {
     file << joinElement(element) << endl;
 }
 
-string CsvFileWriter::joinElement(QList<QString> element)
+string CsvFileWriter::joinElement(QStringList element)
 {
     string joinedElement;
     for (int index = 0; index < element.size() - 1; index++)

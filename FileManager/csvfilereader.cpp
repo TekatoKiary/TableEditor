@@ -12,7 +12,7 @@ QString CsvFileReader::getFileName()
     return fileName;
 }
 
-QList<QString> CsvFileReader::getTitles()
+QStringList CsvFileReader::getTitles()
 {
     return titles;
 }
@@ -56,9 +56,9 @@ void CsvFileReader::readElements(ifstream *file)
         elements.append(splitElement(QString::fromStdString(element)));
 }
 
-QList<QString> CsvFileReader::splitElement(QString element)
+QStringList CsvFileReader::splitElement(QString element)
 {
-    QList<QString> dividedElement;
+    QStringList dividedElement;
     string cell;
     stringstream stream(element.toStdString());
     while(getline(stream, cell, delimiter))
