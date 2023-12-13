@@ -17,7 +17,8 @@ SOURCES += \
 HEADERS += \
     FileManager/csvfilereader.h \
     FileManager/csvfilewriter.h \
-    mainwindow.h
+    mainwindow.h \
+    utils.h
 
 FORMS += \
     mainwindow.ui

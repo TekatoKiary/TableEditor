@@ -15,6 +15,7 @@ public:
     ~CsvFileWriter();
 
     void write(QStringList element);
+    void write(QList<QList<QString> > elements);
 
 private:
     QString fileName;

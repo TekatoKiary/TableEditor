@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "FileManager/csvfilereader.h"
+#include "FileManager/csvfilewriter.h"
+#include "utils.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -10,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     setFixedSize(sizeWindow);
     ui->setupUi(this);
     ui->tableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    setCurrentFileName(fileNamePath);
 }
 
 MainWindow::~MainWindow()
@@ -19,14 +22,17 @@ MainWindow::~MainWindow()
 
 void MainWindow::openFile()
 {
-    QString fileName = QFileDialog::getOpenFileName(
+    QString fileNamePath = QFileDialog::getOpenFileName(
                 this,
                 "Открыть файл",
                 QDir::homePath(),
                 "Csv files (*.csv)"
                 );
-
-    CsvFileReader fileReader(fileName);
+    if(fileNamePath.isEmpty() || fileNamePath.isNull())
+        return;
+    this->fileNamePath = fileNamePath;
+    CsvFileReader fileReader(this->fileNamePath);
+    setCurrentFileName(getFileNameFromAbsolutePath(this->fileNamePath));
     loadTable(fileReader.getTitles(), fileReader.getElements());
 }
 
@@ -74,7 +80,10 @@ void MainWindow::addColumn()
 
 void MainWindow::addElement()
 {
+    int rowIndex = ui->tableWidget->rowCount();
     ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
+    for(int columnIndex = 0; columnIndex < ui->tableWidget->columnCount(); columnIndex++)
+        ui->tableWidget->setItem(rowIndex, columnIndex, new QTableWidgetItem);
 }
 
 
@@ -84,4 +93,38 @@ QStringList MainWindow::getTitles()
     for(int index = 0; index < ui->tableWidget->model()->columnCount(); index++)
         headers.append(ui->tableWidget->model()->headerData(index, Qt::Horizontal).toString());
     return headers;
+}
+
+void MainWindow::saveFile()
+{
+    CsvFileWriter fileWriter(fileNamePath);
+    fileWriter.write(getTitles());
+    fileWriter.write(getElements());
+    ui->statusbar->showMessage("Файл сохранен");
+}
+
+QList<QList<QString>> MainWindow::getElements()
+{
+    QList<QList<QString>> elements;
+    for(int rowIndex = 0; rowIndex < ui->tableWidget->rowCount(); rowIndex++)
+    {
+        QList<QString> element;
+        for(int columnIndex = 0; columnIndex < ui->tableWidget->columnCount(); columnIndex++)
+            element.append(getCell(rowIndex, columnIndex));
+        elements.append(element);
+    }
+    return elements;
+}
+
+void MainWindow::setCurrentFileName(QString currentFileName)
+{
+    ui->currentFileNameLabel->setText(currentFileName);
+}
+
+QString MainWindow::getCell(int rowIndex, int columnIndex)
+{
+    QString cell = ui->tableWidget->item(rowIndex, columnIndex)->text();
+    if (cell.isNull())
+        return "";
+    return cell;
 }

@@ -17,6 +17,12 @@ void CsvFileWriter::write(QStringList element)
     file << joinElement(element) << endl;
 }
 
+void CsvFileWriter::write(QList<QList<QString>> elements)
+{
+    for (int index = 0; index < elements.size(); index++)
+        file << joinElement(elements[index]) << endl;
+}
+
 string CsvFileWriter::joinElement(QStringList element)
 {
     string joinedElement;
