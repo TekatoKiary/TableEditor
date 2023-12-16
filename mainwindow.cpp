@@ -22,18 +22,31 @@ MainWindow::~MainWindow()
 
 void MainWindow::openFile()
 {
-    QString fileNamePath = QFileDialog::getOpenFileName(
+    try
+    {
+        setFileNamePath(getOpenFileNamePath());
+        CsvFileReader fileReader(fileNamePath);
+        loadTable(fileReader.getTitles(), fileReader.getElements());
+    }
+    catch (domain_error) {}
+}
+
+QString MainWindow::getOpenFileNamePath()
+{
+    return QFileDialog::getOpenFileName(
                 this,
                 "Открыть файл",
                 QDir::homePath(),
                 "Csv files (*.csv)"
                 );
-    if(fileNamePath.isEmpty() || fileNamePath.isNull())
-        return;
-    this->fileNamePath = fileNamePath;
-    CsvFileReader fileReader(this->fileNamePath);
-    setCurrentFileName(getFileNameFromAbsolutePath(this->fileNamePath));
-    loadTable(fileReader.getTitles(), fileReader.getElements());
+}
+
+void MainWindow::setFileNamePath(QString newFileNamePath)
+{
+    if(newFileNamePath.isEmpty() || newFileNamePath.isNull())
+        throw domain_error("Передаваемый параметр пуст или равен Null");
+    fileNamePath = newFileNamePath;
+    setCurrentFileName(getFileNameFromAbsolutePath(fileNamePath));
 }
 
 void MainWindow::loadTable(QStringList titles, QList<QList<QString>> elements)
@@ -46,7 +59,12 @@ void MainWindow::setTitles(QStringList titles)
 {
     ui->tableWidget->setColumnCount(titles.count());
     ui->tableWidget->setHorizontalHeaderLabels(titles);
-    for(int index = 0; index < titles.size(); index++)
+    setSectionResizeModeInTitles();
+}
+
+void MainWindow::setSectionResizeModeInTitles()
+{
+    for(int index = 0; index < getTitles().size(); index++)
         ui->tableWidget->horizontalHeader()->setSectionResizeMode(index, QHeaderView::Stretch);
 }
 
@@ -127,4 +145,57 @@ QString MainWindow::getCell(int rowIndex, int columnIndex)
     if (cell.isNull())
         return "";
     return cell;
+}
+
+void MainWindow::deleteColumn()
+{
+    if (ui->tableWidget->selectedItems().isEmpty())
+        return;
+    if (getPermission("Удаление столбца","Вы уверены?"))
+    {
+        QTableWidgetSelectionRange selectedRanges = ui->tableWidget->selectedRanges()[0];
+        for (int index = selectedRanges.rightColumn(); index >= selectedRanges.leftColumn(); index--)
+            ui->tableWidget->removeColumn(index);
+        setSectionResizeModeInTitles();
+    }
+}
+
+bool MainWindow::getPermission(QString title, QString text)
+{
+    QMessageBox::StandardButton reply = QMessageBox::question(this, title, text,
+                                                              QMessageBox::Yes|QMessageBox::No);
+    return reply == QMessageBox::Yes;
+}
+
+void MainWindow::deleteElement()
+{
+    if (!ui->tableWidget->selectedItems().isEmpty())
+    {
+        QTableWidgetSelectionRange selectedRanges = ui->tableWidget->selectedRanges()[0];
+        for (int index = selectedRanges.bottomRow(); index >= selectedRanges.topRow(); index--)
+            ui->tableWidget->removeRow(index);
+    }
+}
+
+void MainWindow::saveAsFile()
+{
+    try
+    {
+        setFileNamePath(getSaveFileNamePath());
+        CsvFileWriter fileWriter(fileNamePath);
+        fileWriter.write(getTitles());
+        fileWriter.write(getElements());
+        ui->statusbar->showMessage("Файл сохранен");
+    }
+    catch (domain_error) {}
+}
+
+QString MainWindow::getSaveFileNamePath()
+{
+    return QFileDialog::getSaveFileName(
+                this,
+                "Сохранить файл",
+                QDir::homePath(),
+                "Csv files (*.csv)"
+                );
 }

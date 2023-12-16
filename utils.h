@@ -11,4 +11,6 @@ QString getFileNameFromAbsolutePath(QString filePath)
     return QString::fromStdString(path.filename().string());
 }
 
+
+
 #endif // UTILS_H
