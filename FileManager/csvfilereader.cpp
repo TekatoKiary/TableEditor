@@ -45,7 +45,7 @@ void CsvFileReader::readTitles(ifstream *file)
     string line, nameTitle;
     getline(*file, line);
     stringstream stream(line);
-    while(getline(stream, nameTitle, delimiter))
+    while(getline(stream, nameTitle, delimiter.toLatin1()))
         titles.append(QString::fromStdString(nameTitle));
 }
 
@@ -53,15 +53,5 @@ void CsvFileReader::readElements(ifstream *file)
 {
     string element;
     while(getline(*file, element))
-        elements.append(splitElement(QString::fromStdString(element)));
-}
-
-QStringList CsvFileReader::splitElement(QString element)
-{
-    QStringList dividedElement;
-    string cell;
-    stringstream stream(element.toStdString());
-    while(getline(stream, cell, delimiter))
-        dividedElement.append(QString::fromStdString(cell));
-    return dividedElement;
+        elements.append(QString::fromStdString(element).split(delimiter));
 }

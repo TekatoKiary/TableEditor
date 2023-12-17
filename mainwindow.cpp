@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     setFixedSize(sizeWindow);
     ui->setupUi(this);
     ui->tableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    setCurrentFileName(fileNamePath);
+    setCurrentFileName(filePath);
 }
 
 MainWindow::~MainWindow()
@@ -24,14 +24,14 @@ void MainWindow::openFile()
 {
     try
     {
-        setFileNamePath(getOpenFileNamePath());
-        CsvFileReader fileReader(fileNamePath);
+        setFilePath(getOpenFilePath());
+        CsvFileReader fileReader(filePath);
         loadTable(fileReader.getTitles(), fileReader.getElements());
     }
     catch (domain_error) {}
 }
 
-QString MainWindow::getOpenFileNamePath()
+QString MainWindow::getOpenFilePath()
 {
     return QFileDialog::getOpenFileName(
                 this,
@@ -41,12 +41,12 @@ QString MainWindow::getOpenFileNamePath()
                 );
 }
 
-void MainWindow::setFileNamePath(QString newFileNamePath)
+void MainWindow::setFilePath(QString newFilePath)
 {
-    if(newFileNamePath.isEmpty() || newFileNamePath.isNull())
+    if(newFilePath.isEmpty() || newFilePath.isNull())
         throw domain_error("Передаваемый параметр пуст или равен Null");
-    fileNamePath = newFileNamePath;
-    setCurrentFileName(getFileNameFromAbsolutePath(fileNamePath));
+    filePath = newFilePath;
+    setCurrentFileName(getFileNameFromAbsolutePath(filePath));
 }
 
 void MainWindow::loadTable(QStringList titles, QList<QList<QString>> elements)
@@ -59,13 +59,6 @@ void MainWindow::setTitles(QStringList titles)
 {
     ui->tableWidget->setColumnCount(titles.count());
     ui->tableWidget->setHorizontalHeaderLabels(titles);
-    setSectionResizeModeInTitles();
-}
-
-void MainWindow::setSectionResizeModeInTitles()
-{
-    for(int index = 0; index < getTitles().size(); index++)
-        ui->tableWidget->horizontalHeader()->setSectionResizeMode(index, QHeaderView::Stretch);
 }
 
 void MainWindow::setElements(QList<QList<QString>> elements)
@@ -104,6 +97,14 @@ void MainWindow::addElement()
         ui->tableWidget->setItem(rowIndex, columnIndex, new QTableWidgetItem);
 }
 
+void MainWindow::addElement(QStringList element)
+{
+    int rowIndex = ui->tableWidget->rowCount();
+    ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
+    for(int columnIndex = 0; columnIndex < ui->tableWidget->columnCount(); columnIndex++)
+        ui->tableWidget->setItem(rowIndex, columnIndex, new QTableWidgetItem(element[columnIndex]));
+}
+
 
 QStringList MainWindow::getTitles()
 {
@@ -115,7 +116,7 @@ QStringList MainWindow::getTitles()
 
 void MainWindow::saveFile()
 {
-    CsvFileWriter fileWriter(fileNamePath);
+    CsvFileWriter fileWriter(filePath);
     fileWriter.write(getTitles());
     fileWriter.write(getElements());
     ui->statusbar->showMessage("Файл сохранен");
@@ -156,7 +157,6 @@ void MainWindow::deleteColumn()
         QTableWidgetSelectionRange selectedRanges = ui->tableWidget->selectedRanges()[0];
         for (int index = selectedRanges.rightColumn(); index >= selectedRanges.leftColumn(); index--)
             ui->tableWidget->removeColumn(index);
-        setSectionResizeModeInTitles();
     }
 }
 
@@ -181,8 +181,8 @@ void MainWindow::saveAsFile()
 {
     try
     {
-        setFileNamePath(getSaveFileNamePath());
-        CsvFileWriter fileWriter(fileNamePath);
+        setFilePath(getSaveFilePath());
+        CsvFileWriter fileWriter(filePath);
         fileWriter.write(getTitles());
         fileWriter.write(getElements());
         ui->statusbar->showMessage("Файл сохранен");
@@ -190,7 +190,7 @@ void MainWindow::saveAsFile()
     catch (domain_error) {}
 }
 
-QString MainWindow::getSaveFileNamePath()
+QString MainWindow::getSaveFilePath()
 {
     return QFileDialog::getSaveFileName(
                 this,
@@ -198,4 +198,43 @@ QString MainWindow::getSaveFileNamePath()
                 QDir::homePath(),
                 "Csv files (*.csv)"
                 );
+}
+
+void MainWindow::rebaseTable()
+{
+    try
+    {
+        CsvFileReader rebasingFileReader = getRebasingFileReader();
+        QStringList combiningTitles = getTitles() + rebasingFileReader.getTitles();
+        combiningTitles.removeDuplicates();
+        setTitles(combiningTitles);
+        addElementsFromRebasingFile(rebasingFileReader);
+    }
+    catch (domain_error) {}
+}
+
+CsvFileReader MainWindow::getRebasingFileReader()
+{
+    QString rebasingFilePath = getOpenFilePath();
+    if(rebasingFilePath.isEmpty() || rebasingFilePath.isNull())
+        throw domain_error("Передаваемый параметр пуст или равен Null");
+    return CsvFileReader(rebasingFilePath);
+}
+
+void MainWindow::addElementsFromRebasingFile(CsvFileReader rebasingFileReader)
+{
+    for(QStringList element: rebasingFileReader.getElements())
+        createNewElementBasedOnRebasingOne(element, rebasingFileReader.getTitles());
+}
+
+QStringList MainWindow::createNewElementBasedOnRebasingOne(QStringList rebasingElement, QStringList rebasingTitles)
+{
+    QStringList newElement;
+    for(QString title : getTitles())
+        if(rebasingTitles.contains(title))
+            newElement.append(rebasingElement[rebasingTitles.indexOf(title)]);
+        else
+            newElement.append("");
+    addElement(newElement);
+    return newElement;
 }

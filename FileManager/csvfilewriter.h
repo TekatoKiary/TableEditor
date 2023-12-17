@@ -19,7 +19,7 @@ public:
 
 private:
     QString fileName;
-    char delimiter =',';
+    QChar delimiter =',';
     ofstream file;
 
     string joinElement(QStringList element);

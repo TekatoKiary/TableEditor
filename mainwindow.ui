@@ -102,7 +102,6 @@
     <property name="title">
      <string>Файл</string>
     </property>
-    <addaction name="createTableAction"/>
     <addaction name="openFileAction"/>
     <addaction name="saveFileAction"/>
     <addaction name="saveAsAction"/>
@@ -116,6 +115,10 @@
     <addaction name="addElementAction"/>
     <addaction name="deleteColumnAction"/>
     <addaction name="deleteElementAction"/>
+    <addaction name="separator"/>
+    <addaction name="cutAction"/>
+    <addaction name="copyAction"/>
+    <addaction name="pasteAction"/>
    </widget>
    <addaction name="fileMenu"/>
    <addaction name="editMenu"/>
@@ -179,6 +182,30 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="cutAction">
+   <property name="text">
+    <string>Вырезать</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="copyAction">
+   <property name="text">
+    <string>Копировать</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="pasteAction">
+   <property name="text">
+    <string>Вставить</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
    </property>
   </action>
  </widget>
@@ -328,6 +355,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>rebaseAction</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>rebaseTable()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>openFile()</slot>
@@ -337,5 +380,6 @@
   <slot>deleteColumn()</slot>
   <slot>deleteElement()</slot>
   <slot>saveAsFile()</slot>
+  <slot>rebaseTable()</slot>
  </slots>
 </ui>

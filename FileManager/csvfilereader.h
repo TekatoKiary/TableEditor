@@ -28,15 +28,13 @@ private:
     QStringList titles;
     QString fileName;
     QList<QList<QString>> elements;
-    char delimiter = ',';
+    QChar delimiter = ',';
 
     void readFile();
 
     void readTitles(ifstream *file);
 
     void readElements(ifstream *file);
-
-    QStringList splitElement(QString element);
 
 };
 

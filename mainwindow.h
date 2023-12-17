@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <FileManager/csvfilereader.h>
+
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QList>
@@ -31,9 +33,10 @@ private slots:
     void deleteColumn();
     void deleteElement();
     void saveAsFile();
+    void rebaseTable();
 private:
     Ui::MainWindow *ui;
-    QString fileNamePath = "newFile.csv";
+    QString filePath = "newFile.csv";
     QSize sizeWindow = QSize(800, 700);
 
     void loadTable(QList<QString> titles, QList<QList<QString> > elements);
@@ -45,8 +48,12 @@ private:
     QString getCell(int rowIndex, int columnIndex);
     void setSectionResizeModeInTitles();
     bool getPermission(QString title, QString text);
-    void setFileNamePath(QString newFileNamePath);
-    QString getSaveFileNamePath();
-    QString getOpenFileNamePath();
+    void setFilePath(QString newFilePath);
+    QString getSaveFilePath();
+    QString getOpenFilePath();
+    void addElement(QStringList element);
+    CsvFileReader getRebasingFileReader();
+    void addElementsFromRebasingFile(CsvFileReader rebasingFileReader);
+    QStringList createNewElementBasedOnRebasingOne(QStringList oldElement, QStringList rebasingTitles);
 };
 #endif // MAINWINDOW_H
