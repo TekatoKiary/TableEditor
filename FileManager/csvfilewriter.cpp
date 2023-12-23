@@ -12,13 +12,13 @@ CsvFileWriter::~CsvFileWriter()
     file.close();
 }
 
-void CsvFileWriter::write(QStringList element)
+void CsvFileWriter::write(QStringList row)
 {
-    file << element.join(delimiter).toStdString() << endl;
+    file << row.join(delimiter).toStdString() << endl;
 }
 
-void CsvFileWriter::write(QList<QList<QString>> elements)
+void CsvFileWriter::write(QList<QStringList> rows)
 {
-    for (int index = 0; index < elements.size(); index++)
-        file << elements[index].join(delimiter).toStdString() << endl;
+    for (int index = 0; index < rows.size(); index++)
+        file << rows[index].join(delimiter).toStdString() << endl;
 }

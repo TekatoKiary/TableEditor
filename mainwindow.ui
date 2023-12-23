@@ -247,7 +247,7 @@
    <sender>addElementButton</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>addElement()</slot>
+   <slot>addRow()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>279</x>
@@ -263,7 +263,7 @@
    <sender>addElementAction</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
-   <slot>addElement()</slot>
+   <slot>addRow()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -327,7 +327,7 @@
    <sender>deleteElementAction</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
-   <slot>deleteElement()</slot>
+   <slot>deleteRow()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -371,15 +371,66 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>copyAction</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>copyTablePart()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pasteAction</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>pasteTablePart()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cutAction</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>cutTablePart()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>openFile()</slot>
   <slot>addColumn()</slot>
-  <slot>addElement()</slot>
+  <slot>addRow()</slot>
   <slot>saveFile()</slot>
   <slot>deleteColumn()</slot>
-  <slot>deleteElement()</slot>
+  <slot>deleteRow()</slot>
   <slot>saveAsFile()</slot>
   <slot>rebaseTable()</slot>
+  <slot>copyTablePart()</slot>
+  <slot>pasteTablePart()</slot>
+  <slot>cutTablePart()</slot>
  </slots>
 </ui>

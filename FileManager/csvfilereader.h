@@ -20,21 +20,21 @@ public:
 
     int getColumnCount();
 
-    int getElementsCount();
+    int getRowsCount();
 
-    QList<QList<QString>> getElements();
+    QList<QList<QString>> getRows();
 
 private:
     QStringList titles;
     QString fileName;
-    QList<QList<QString>> elements;
+    QList<QStringList> rows;
     QChar delimiter = ',';
 
     void readFile();
 
     void readTitles(ifstream *file);
 
-    void readElements(ifstream *file);
+    void readRows(ifstream *file);
 
 };
 

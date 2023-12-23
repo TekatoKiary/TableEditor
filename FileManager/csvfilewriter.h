@@ -14,15 +14,15 @@ public:
     CsvFileWriter(QString fileName);
     ~CsvFileWriter();
 
-    void write(QStringList element);
-    void write(QList<QList<QString> > elements);
+    void write(QStringList row);
+    void write(QList<QStringList> rows);
 
 private:
     QString fileName;
     QChar delimiter =',';
     ofstream file;
 
-    string joinElement(QStringList element);
+    string joinRow(QStringList row);
 };
 
 #endif // CSVFILEWRITER_H

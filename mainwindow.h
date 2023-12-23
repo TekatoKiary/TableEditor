@@ -3,11 +3,14 @@
 
 #include <FileManager/csvfilereader.h>
 
+#include <QClipboard>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QList>
 #include <QMessageBox>
 #include <QMainWindow>
+#include <QTableWidgetItem>
+#include <fstream>
 
 using namespace std;
 
@@ -27,33 +30,42 @@ public:
 private slots:
     void openFile();
     void addColumn();
-
-    void addElement();
+    void addRow();
     void saveFile();
     void deleteColumn();
-    void deleteElement();
+    void deleteRow();
     void saveAsFile();
     void rebaseTable();
+    void copyTablePart();
+    void pasteTablePart();
+    void cutTablePart();
 private:
     Ui::MainWindow *ui;
     QString filePath = "newFile.csv";
     QSize sizeWindow = QSize(800, 700);
+    QChar cellDelimiter = ';';
+    QChar rowDelimiter = '\t';
 
-    void loadTable(QList<QString> titles, QList<QList<QString> > elements);
-    void setTitles(QList<QString> titles);
-    void setElements(QList<QList<QString> > elements);
-    QList<QString> getTitles();
+    void loadTable(QStringList titles, QList<QStringList> rows);
+    void setTitles(QStringList titles);
+    void setRows(QList<QStringList> rows);
+    QStringList getTitles();
     void setCurrentFileName(QString nameCurrentFile);
-    QList<QList<QString> > getElements();
+    QList<QStringList> getRows();
+    QStringList getRow(int rowIndex);
     QString getCell(int rowIndex, int columnIndex);
     void setSectionResizeModeInTitles();
     bool getPermission(QString title, QString text);
     void setFilePath(QString newFilePath);
     QString getSaveFilePath();
     QString getOpenFilePath();
-    void addElement(QStringList element);
+    void addRow(QStringList row);
     CsvFileReader getRebasingFileReader();
-    void addElementsFromRebasingFile(CsvFileReader rebasingFileReader);
-    QStringList createNewElementBasedOnRebasingOne(QStringList oldElement, QStringList rebasingTitles);
+    void addRowsFromRebasingFile(CsvFileReader rebasingFileReader);
+    QStringList createNewRowBasedOnRebasingOne(QStringList oldElement, QStringList rebasingTitles);
+    void setClipboard(QString text);
+    void setCell(int rowIndex, int columnIndex, QString textCell);
+    QString takeTablePart(QTableWidgetSelectionRange range, bool is_removed=false);
+    QString takeRow(int rowIndex, int startColumnIndex, int endColumnIndex, bool is_removed=false);
 };
 #endif // MAINWINDOW_H

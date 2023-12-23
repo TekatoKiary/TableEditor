@@ -22,21 +22,21 @@ int CsvFileReader::getColumnCount()
     return titles.count();
 }
 
-int CsvFileReader::getElementsCount()
+int CsvFileReader::getRowsCount()
 {
-    return elements.count();
+    return rows.count();
 }
 
-QList<QList<QString>> CsvFileReader::getElements()
+QList<QStringList> CsvFileReader::getRows()
 {
-    return elements;
+    return rows;
 }
 
 void CsvFileReader::readFile()
 {
     ifstream file(fileName.toStdString());
     readTitles(&file);
-    readElements(&file);
+    readRows(&file);
     file.close();
 }
 
@@ -49,9 +49,9 @@ void CsvFileReader::readTitles(ifstream *file)
         titles.append(QString::fromStdString(nameTitle));
 }
 
-void CsvFileReader::readElements(ifstream *file)
+void CsvFileReader::readRows(ifstream *file)
 {
-    string element;
-    while(getline(*file, element))
-        elements.append(QString::fromStdString(element).split(delimiter));
+    string row;
+    while(getline(*file, row))
+        rows.append(QString::fromStdString(row).split(delimiter));
 }
