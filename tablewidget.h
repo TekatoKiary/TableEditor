@@ -20,6 +20,8 @@ public:
     void setRows(QList<QStringList> rows);
     void addRow(QStringList row);
     QList<QModelIndex> getSelectedIndexes();
+    QString getTitle(int index);
+    void setTitle(int columnIndex, QString title);
 public slots:
     void removeSelectedColumns();
     void removeSelectedRows();

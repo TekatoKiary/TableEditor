@@ -1,4 +1,5 @@
 #include "tablewidget.h"
+#include "utils.h"
 
 
 TableWidget::TableWidget(QWidget *parent)
@@ -56,8 +57,13 @@ QStringList TableWidget::getTitles()
 {
     QStringList headers;
     for(int index = 0; index < model()->columnCount(); index++)
-        headers.append(model()->headerData(index, Qt::Horizontal).toString());
+        headers.append(getTitle(index));
     return headers;
+}
+
+QString TableWidget::getTitle(int index)
+{
+    return horizontalHeaderItem(index)->text().remove(0, 3);
 }
 
 void TableWidget::addColumn()
@@ -86,6 +92,7 @@ QString TableWidget::getColumnName(QString title, QString label, QString text)
 void TableWidget::setTitles(QStringList titles)
 {
     setColumnCount(titles.count());
+    enumerateStringList(titles);
     setHorizontalHeaderLabels(titles);
 }
 
@@ -130,14 +137,16 @@ QList<QModelIndex> TableWidget::getSelectedIndexes()
 
 void TableWidget::renameColumn()
 {
-    QStringList titles = getTitles();
-    QString oldColumnName = titles[currentColumn()];
-    QString newColumnName = getColumnName(QString("Переименование столбца \'%1\'").arg(oldColumnName),
-                                          QString("Новое название столбца \'%1\'").arg(oldColumnName),
-                                          oldColumnName);
+    QString newColumnName = getColumnName(QString("Переименование столбца %1").arg(currentColumn() + 1),
+                                          QString("Новое название столбца %1").arg(currentColumn() + 1),
+                                          getTitles()[currentColumn()]);
     if(!newColumnName.isEmpty())
-    {
-        titles[currentColumn()] = newColumnName;
-        setTitles(titles);
-    }
+        setTitle(currentColumn(), newColumnName);
+}
+
+void TableWidget::setTitle(int columnIndex, QString title)
+{
+    if(columnIndex >= columnCount() || columnIndex < 0)
+        return;
+    setHorizontalHeaderItem(currentColumn(), new QTableWidgetItem(enumerateString(columnIndex, title)));
 }

@@ -113,7 +113,9 @@
     </property>
     <addaction name="addColumnAction"/>
     <addaction name="addRowAction"/>
+    <addaction name="combineColumns"/>
     <addaction name="renameColumnAction"/>
+    <addaction name="moveColumn"/>
     <addaction name="removeColumnAction"/>
     <addaction name="removeRowAction"/>
     <addaction name="separator"/>
@@ -211,6 +213,22 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="combineColumns">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Объединение столбцов</string>
+   </property>
+  </action>
+  <action name="moveColumn">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Переместить столбец</string>
    </property>
   </action>
  </widget>
