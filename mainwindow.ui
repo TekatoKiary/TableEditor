@@ -20,7 +20,7 @@
    <string>Редактор таблиц</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTableWidget" name="tableWidget">
+   <widget class="TableWidget" name="tableWidget">
     <property name="geometry">
      <rect>
       <x>25</x>
@@ -30,7 +30,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="addElementButton">
+   <widget class="QPushButton" name="addRowButton">
     <property name="geometry">
      <rect>
       <x>200</x>
@@ -112,13 +112,15 @@
      <string>Редактирование</string>
     </property>
     <addaction name="addColumnAction"/>
-    <addaction name="addElementAction"/>
-    <addaction name="deleteColumnAction"/>
-    <addaction name="deleteElementAction"/>
+    <addaction name="addRowAction"/>
+    <addaction name="renameColumnAction"/>
+    <addaction name="removeColumnAction"/>
+    <addaction name="removeRowAction"/>
     <addaction name="separator"/>
     <addaction name="cutAction"/>
     <addaction name="copyAction"/>
     <addaction name="pasteAction"/>
+    <addaction name="separator"/>
    </widget>
    <addaction name="fileMenu"/>
    <addaction name="editMenu"/>
@@ -129,7 +131,7 @@
     <string>Добавить столбец</string>
    </property>
   </action>
-  <action name="addElementAction">
+  <action name="addRowAction">
    <property name="text">
     <string>Добавить элемент</string>
    </property>
@@ -155,20 +157,12 @@
     <string>Ctrl+Shift+S</string>
    </property>
   </action>
-  <action name="createTableAction">
-   <property name="text">
-    <string>Создать новую таблицу</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+N</string>
-   </property>
-  </action>
-  <action name="deleteColumnAction">
+  <action name="removeColumnAction">
    <property name="text">
     <string>Удалить столбец</string>
    </property>
   </action>
-  <action name="deleteElementAction">
+  <action name="removeRowAction">
    <property name="text">
     <string>Удалить элемент</string>
    </property>
@@ -208,7 +202,33 @@
     <string>Ctrl+V</string>
    </property>
   </action>
+  <action name="renameColumnAction">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Переименовать столбец</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TableWidget</class>
+   <extends>QTableWidget</extends>
+   <header>tablewidget.h</header>
+   <slots>
+    <signal>cellHighlighted(bool)</signal>
+    <slot>addRow()</slot>
+    <slot>addColumn()</slot>
+    <slot>removeSelectedRows()</slot>
+    <slot>removeSelectedColumns()</slot>
+    <slot>renameColumn()</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
@@ -230,7 +250,7 @@
   <connection>
    <sender>addColumnButton</sender>
    <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>tableWidget</receiver>
    <slot>addColumn()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -239,14 +259,14 @@
     </hint>
     <hint type="destinationlabel">
      <x>399</x>
-     <y>349</y>
+     <y>369</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>addElementButton</sender>
+   <sender>addRowButton</sender>
    <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>tableWidget</receiver>
    <slot>addRow()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -255,14 +275,14 @@
     </hint>
     <hint type="destinationlabel">
      <x>399</x>
-     <y>349</y>
+     <y>369</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>addElementAction</sender>
+   <sender>addRowAction</sender>
    <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>tableWidget</receiver>
    <slot>addRow()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -271,14 +291,14 @@
     </hint>
     <hint type="destinationlabel">
      <x>399</x>
-     <y>349</y>
+     <y>369</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>addColumnAction</sender>
    <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>tableWidget</receiver>
    <slot>addColumn()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -287,7 +307,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>399</x>
-     <y>349</y>
+     <y>369</y>
     </hint>
    </hints>
   </connection>
@@ -308,10 +328,10 @@
    </hints>
   </connection>
   <connection>
-   <sender>deleteColumnAction</sender>
+   <sender>removeColumnAction</sender>
    <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>deleteColumn()</slot>
+   <receiver>tableWidget</receiver>
+   <slot>removeSelectedColumns()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -319,15 +339,15 @@
     </hint>
     <hint type="destinationlabel">
      <x>399</x>
-     <y>349</y>
+     <y>369</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>deleteElementAction</sender>
+   <sender>removeRowAction</sender>
    <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>deleteRow()</slot>
+   <receiver>tableWidget</receiver>
+   <slot>removeSelectedRows()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -335,7 +355,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>399</x>
-     <y>349</y>
+     <y>369</y>
     </hint>
    </hints>
   </connection>
@@ -419,14 +439,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>renameColumnAction</sender>
+   <signal>triggered()</signal>
+   <receiver>tableWidget</receiver>
+   <slot>renameColumn()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>openFile()</slot>
-  <slot>addColumn()</slot>
-  <slot>addRow()</slot>
   <slot>saveFile()</slot>
-  <slot>deleteColumn()</slot>
-  <slot>deleteRow()</slot>
   <slot>saveAsFile()</slot>
   <slot>rebaseTable()</slot>
   <slot>copyTablePart()</slot>

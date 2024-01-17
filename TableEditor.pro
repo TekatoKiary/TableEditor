@@ -12,12 +12,14 @@ SOURCES += \
     FileManager/csvfilereader.cpp \
     FileManager/csvfilewriter.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    tablewidget.cpp
 
 HEADERS += \
     FileManager/csvfilereader.h \
     FileManager/csvfilewriter.h \
     mainwindow.h \
+    tablewidget.h \
     utils.h
 
 FORMS += \
