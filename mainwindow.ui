@@ -222,6 +222,9 @@
    <property name="text">
     <string>Объединение столбцов</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+U</string>
+   </property>
   </action>
   <action name="moveColumn">
    <property name="enabled">
@@ -229,6 +232,9 @@
    </property>
    <property name="text">
     <string>Переместить столбец</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
    </property>
   </action>
  </widget>
@@ -244,6 +250,10 @@
     <slot>removeSelectedRows()</slot>
     <slot>removeSelectedColumns()</slot>
     <slot>renameColumn()</slot>
+    <slot>cut()</slot>
+    <slot>paste()</slot>
+    <slot>copy()</slot>
+    <slot>rebase()</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -396,8 +406,8 @@
   <connection>
    <sender>rebaseAction</sender>
    <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>rebaseTable()</slot>
+   <receiver>tableWidget</receiver>
+   <slot>rebase()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -405,15 +415,15 @@
     </hint>
     <hint type="destinationlabel">
      <x>399</x>
-     <y>349</y>
+     <y>369</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>copyAction</sender>
    <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>copyTablePart()</slot>
+   <receiver>tableWidget</receiver>
+   <slot>copy()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -421,15 +431,15 @@
     </hint>
     <hint type="destinationlabel">
      <x>399</x>
-     <y>349</y>
+     <y>369</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>pasteAction</sender>
    <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>pasteTablePart()</slot>
+   <receiver>tableWidget</receiver>
+   <slot>paste()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -437,15 +447,15 @@
     </hint>
     <hint type="destinationlabel">
      <x>399</x>
-     <y>349</y>
+     <y>369</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>cutAction</sender>
    <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>cutTablePart()</slot>
+   <receiver>tableWidget</receiver>
+   <slot>cut()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -453,7 +463,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>399</x>
-     <y>349</y>
+     <y>369</y>
     </hint>
    </hints>
   </connection>
@@ -478,9 +488,5 @@
   <slot>openFile()</slot>
   <slot>saveFile()</slot>
   <slot>saveAsFile()</slot>
-  <slot>rebaseTable()</slot>
-  <slot>copyTablePart()</slot>
-  <slot>pasteTablePart()</slot>
-  <slot>cutTablePart()</slot>
  </slots>
 </ui>

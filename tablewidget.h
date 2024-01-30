@@ -1,38 +1,56 @@
 #ifndef TABLEWIDGET_H
 #define TABLEWIDGET_H
 
-#include <QTableWidget>
+#include <FileManager/csvfilereader.h>
+
 #include <QInputDialog>
+#include <QMessageBox>
 #include <QLineEdit>
 #include <QObject>
-#include <QMessageBox>
+#include <QTableWidget>
 
 class TableWidget : public QTableWidget
 {
     Q_OBJECT
 public:
+    QChar cellDelimiter = ';';
+    QChar rowDelimiter = '\t';
+
     TableWidget(QWidget *parent = nullptr);
-    QList<QStringList> getRows();
-    QStringList getRow(int rowIndex);
-    QStringList getTitles();
-    void setTitles(QStringList titles);
-    void setItem(int rowIndex, int columnIndex, QString textCell);
-    void setRows(QList<QStringList> rows);
+
     void addRow(QStringList row);
-    QList<QModelIndex> getSelectedIndexes();
+    QStringList getRow(int rowIndex);
+    QList<QStringList> getRows();
+    void setRow(QStringList row, int rowIndex);
+    void setRows(QList<QStringList> rows);
+
+    void addTitle(QString columnName);
     QString getTitle(int index);
+    QStringList getTitles();
     void setTitle(int columnIndex, QString title);
+    void setTitles(QStringList titles);
+
+    void setItem(int rowIndex, int columnIndex, QString textCell);
+
+    QList<QModelIndex> getSelectedIndexes();
 public slots:
+    void addColumn();
+    void addRow();
+    void copy();
+    void cut();
+    void paste();
+    void rebase();
     void removeSelectedColumns();
     void removeSelectedRows();
-    void addRow();
-    void addColumn();
     void renameColumn();
-signals:
-    void cellHighlighted(bool);
 private:
+    void addRowsFromRebasingFile(CsvFileReader* rebasingFileReader);
+    QStringList createNewRowBasedOnRebasingOne(QStringList oldRow, QStringList rebasingTitles);
+    QString getColumnNameWithDialog(QString title, QString label, QString text);
     bool getPermission(QString title, QString text);
-    QString getColumnName(QString title, QString label, QString text);
+    void pasteRowPart(QString row, int startColumnIndex, int rowIndex);
+    QString takeRowPart(int rowIndex, int startColumnIndex, int endColumnIndex, bool is_removed=false);
+    QString takePart(QTableWidgetSelectionRange range, bool is_removed=false);
 };
 
 #endif // TABLEWIDGET_H
