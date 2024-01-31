@@ -113,9 +113,9 @@
     </property>
     <addaction name="addColumnAction"/>
     <addaction name="addRowAction"/>
-    <addaction name="combineColumns"/>
+    <addaction name="combineColumnsAction"/>
     <addaction name="renameColumnAction"/>
-    <addaction name="moveColumn"/>
+    <addaction name="moveColumnAction"/>
     <addaction name="removeColumnAction"/>
     <addaction name="removeRowAction"/>
     <addaction name="separator"/>
@@ -215,7 +215,7 @@
     <string>Ctrl+R</string>
    </property>
   </action>
-  <action name="combineColumns">
+  <action name="combineColumnsAction">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -226,7 +226,7 @@
     <string>Ctrl+U</string>
    </property>
   </action>
-  <action name="moveColumn">
+  <action name="moveColumnAction">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -242,7 +242,7 @@
   <customwidget>
    <class>TableWidget</class>
    <extends>QTableWidget</extends>
-   <header>tablewidget.h</header>
+   <header>TableWidget/tablewidget.h</header>
    <slots>
     <signal>cellHighlighted(bool)</signal>
     <slot>addRow()</slot>
@@ -254,6 +254,7 @@
     <slot>paste()</slot>
     <slot>copy()</slot>
     <slot>rebase()</slot>
+    <slot>tableChanged(QTableWidgetItem*)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -476,6 +477,22 @@
     <hint type="sourcelabel">
      <x>-1</x>
      <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tableWidget</sender>
+   <signal>itemChanged(QTableWidgetItem*)</signal>
+   <receiver>tableWidget</receiver>
+   <slot>tableChanged(QTableWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>369</y>
     </hint>
     <hint type="destinationlabel">
      <x>399</x>

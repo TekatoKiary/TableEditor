@@ -11,19 +11,24 @@ CONFIG += c++17
 SOURCES += \
     FileManager/csvfilereader.cpp \
     FileManager/csvfilewriter.cpp \
+    PreviewNewTableColumnDialog/previewnewtablecolumndialog.cpp \
+    TableWidget/table.cpp \
+    TableWidget/tablewidget.cpp \
     main.cpp \
     mainwindow.cpp \
-    tablewidget.cpp \
     utils.cpp
 
 HEADERS += \
     FileManager/csvfilereader.h \
     FileManager/csvfilewriter.h \
+    PreviewNewTableColumnDialog/previewnewtablecolumndialog.h \
+    TableWidget/table.h \
+    TableWidget/tablewidget.h \
     mainwindow.h \
-    tablewidget.h \
     utils.h
 
 FORMS += \
+    PreviewNewTableColumnDialog/previewnewtablecolumndialog.ui \
     mainwindow.ui
 
 # Default rules for deployment.

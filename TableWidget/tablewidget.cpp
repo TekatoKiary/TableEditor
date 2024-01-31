@@ -1,7 +1,6 @@
 #include "tablewidget.h"
 #include "utils.h"
 
-
 TableWidget::TableWidget(QWidget *parent)
     : QTableWidget(parent)
 {
@@ -10,31 +9,25 @@ TableWidget::TableWidget(QWidget *parent)
 
 void TableWidget::addRow()
 {
+    table.addRow(QStringList());
     setRowCount(rowCount() + 1);
-}
-
-void TableWidget::addRow(QStringList row)
-{
-    int rowIndex = rowCount();
-    setRowCount(rowCount() + 1);
-    for(int columnIndex = 0; columnIndex < columnCount(); columnIndex++)
-        setItem(rowIndex, columnIndex, row[columnIndex]);
-}
-
-QStringList TableWidget::getRow(int rowIndex)
-{
-    QStringList row;
-    for(int columnIndex = 0; columnIndex < columnCount(); columnIndex++)
-        row.append(item(rowIndex, columnIndex)->text());
-    return row;
 }
 
 QList<QStringList> TableWidget::getRows()
 {
-    QList<QStringList> rows;
-    for(int rowIndex = 0; rowIndex < rowCount(); rowIndex++)
-        rows.append(getRow(rowIndex));
-    return rows;
+    return table.getRows();
+}
+
+void TableWidget::setRows(QList<QStringList> rows)
+{
+    table.setRows(rows);
+    setRowCount(0);
+    for(int rowIndex = 0; rowIndex < rows.size(); rowIndex++)
+    {
+        setRowCount(rowCount() + 1);
+        for(int columnIndex = 0; columnIndex < rows[rowIndex].size(); columnIndex++)
+            setItem(rowIndex, columnIndex, rows[rowIndex][columnIndex]);
+    }
 }
 
 void TableWidget::setRow(QStringList row, int rowIndex)
@@ -43,74 +36,51 @@ void TableWidget::setRow(QStringList row, int rowIndex)
         setItem(rowIndex, columnIndex, row[columnIndex]);
 }
 
-void TableWidget::setRows(QList<QStringList> rows)
-{
-    setRowCount(0);
-    for(int rowIndex = 0; rowIndex < rows.size(); rowIndex++)
-    {
-        setRowCount(rowCount() + 1);
-        setRow(rows[rowIndex], rowIndex);
-    }
-}
-
-void TableWidget::addTitle(QString columnName)
-{
-    QStringList titles = getTitles();
-    titles.append(columnName);
-    setTitles(titles);
-}
-
-QString TableWidget::getTitle(int index)
-{
-    return horizontalHeaderItem(index)->text().remove(0, 3);
-}
-
 QStringList TableWidget::getTitles()
 {
-    QStringList headers;
-    for(int index = 0; index < model()->columnCount(); index++)
-        headers.append(getTitle(index));
-    return headers;
-}
-
-void TableWidget::setTitle(int columnIndex, QString title)
-{
-    if(columnIndex >= columnCount() || columnIndex < 0)
-        return;
-    setHorizontalHeaderItem(currentColumn(), new QTableWidgetItem(enumerateString(columnIndex, title)));
+    return table.getTitles();
 }
 
 void TableWidget::setTitles(QStringList titles)
 {
+    table.setTitles(titles);
+    setViewTitles(table.getTitles());
+}
+
+void TableWidget::setViewTitles(QStringList titles)
+{
     setColumnCount(titles.count());
-    enumerateStringList(titles);
+//        enumerateStringList(table.getTitles());
     setHorizontalHeaderLabels(titles);
 }
 
 void TableWidget::addColumn()
 {
-    QString columnName = getColumnNameWithDialog("Добавление столбца",
-                                                 "Введите название столбца:",
-                                                 "Название столбца");
-    if (!columnName.isEmpty())
-        addTitle(columnName);
+    QString title = getUserTitleWithDialog("Добавление столбца",
+                                           "Введите название столбца:",
+                                           "Название столбца");
+    if (!title.isEmpty())
+    {
+        table.addTitle(title);
+        setViewTitles(table.getTitles());
+    }
 }
-
 void TableWidget::renameColumn()
 {
-    QString newColumnName = getColumnNameWithDialog(QString("Переименование столбца %1").arg(currentColumn() + 1),
-                                                    QString("Новое название столбца %1").arg(currentColumn() + 1),
-                                                    getTitles()[currentColumn()]);
+    QString newColumnName = getUserTitleWithDialog(QString("Переименование столбца №%1").arg(currentColumn() + 1),
+                                                    QString("Новое название столбца №%1").arg(currentColumn() + 1),
+                                                   table.getTitle(currentColumn()));
     if(!newColumnName.isEmpty())
-        setTitle(currentColumn(), newColumnName);
+        table.setTitle(currentColumn(), newColumnName);
 }
 
 void TableWidget::setItem(int rowIndex, int columnIndex, QString textCell)
 {
-    if((columnIndex >= columnCount() || columnIndex < 0) &&
+    if((columnIndex >= columnCount() || columnIndex < 0) ||
             (rowIndex >=rowCount() || rowIndex < 0))
         return;
     QTableWidget::setItem(rowIndex, columnIndex, new QTableWidgetItem(textCell));
+    table.setItem(rowIndex, columnIndex, textCell);
 }
 
 void TableWidget::copy()
@@ -140,11 +110,9 @@ void TableWidget::rebase()
 {
     try
     {
-        CsvFileReader* rebasingFileReader = getOpenFileReader(parentWidget());
-        QStringList combiningTitles = getTitles() + rebasingFileReader->getTitles();
-        combiningTitles.removeDuplicates();
-        setTitles(combiningTitles);
-        addRowsFromRebasingFile(rebasingFileReader);
+        table.rebase(getOpenFileReader(parentWidget()));
+        setTitles(table.getTitles());
+        setRows(table.getRows());
     }
     catch (domain_error) {}
 }
@@ -169,30 +137,13 @@ QString TableWidget::takeRowPart(int rowIndex, int startColumnIndex, int endColu
     return copiedRow.join(cellDelimiter);
 }
 
-void TableWidget::addRowsFromRebasingFile(CsvFileReader* rebasingFileReader)
-{
-    for(QStringList row: rebasingFileReader->getRows())
-        addRow(createNewRowBasedOnRebasingOne(row, rebasingFileReader->getTitles()));
-}
-
-QStringList TableWidget::createNewRowBasedOnRebasingOne(QStringList rebasingRow, QStringList rebasingTitles)
-{
-    QStringList newRow;
-    for(QString title : getTitles())
-        if(rebasingTitles.contains(title))
-            newRow.append(rebasingRow[rebasingTitles.indexOf(title)]);
-        else
-            newRow.append("");
-    return newRow;
-}
-
-QString TableWidget::getColumnNameWithDialog(QString title, QString label, QString text)
+QString TableWidget::getUserTitleWithDialog(QString title, QString label, QString text)
 {
     bool ok;
-    QString columnName = QInputDialog::getText(parentWidget(), title, label,
+    QString userTitle = QInputDialog::getText(parentWidget(), title, label,
                                                QLineEdit::Normal, text, &ok);
-    if(ok && !columnName.isEmpty())
-        return columnName;
+    if(ok && !userTitle.isEmpty())
+        return userTitle;
     return "";
 }
 
@@ -208,12 +159,11 @@ QList<QModelIndex> TableWidget::getSelectedIndexes()
     return selectedIndexes();
 }
 
-void TableWidget::pasteRowPart(QString row, int startColumnIndex, int rowIndex)
+void TableWidget::pasteRowPart(QString row, int columnIndex, int rowIndex)
 {
     for(QString textCell: row.split(cellDelimiter))
         if(!textCell.isEmpty())
-            setItem(rowIndex, startColumnIndex++, textCell);
-    rowIndex++;
+            setItem(rowIndex, columnIndex++, textCell);
 }
 
 void TableWidget::removeSelectedColumns()
@@ -236,4 +186,16 @@ void TableWidget::removeSelectedRows()
         for (int index = selectionRanges.bottomRow(); index >= selectionRanges.topRow(); index--)
             removeRow(index);
     }
+}
+
+//void TableWidget::combineSelectedColumns()
+//{
+//    QTableWidgetSelectionRange selectionRanges = selectedRanges().first();
+//    for (int index = selectionRanges.rightColumn(); index > selectionRanges.leftColumn(); index--)
+//        removeColumn(index);
+//}
+
+void TableWidget::tableChanged(QTableWidgetItem* item)
+{
+    table.setItem(item->row(), item->column(), item->text());
 }

@@ -14,8 +14,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     setCurrentFileName(filePath);
 
-    connect(ui->tableWidget, &TableWidget::itemSelectionChanged, this, [this](){
-        this->ui->renameColumnAction->setEnabled(!this->ui->tableWidget->getSelectedIndexes().isEmpty());
+    connect(ui->tableWidget, &TableWidget::itemSelectionChanged, this, [this]{
+        setEnabledAction(ui->combineColumnsAction, ui->tableWidget->getSelectedIndexes().length() >= 2);
+        setEnabledAction(ui->moveColumnAction, !ui->tableWidget->getSelectedIndexes().isEmpty());
+        setEnabledAction(ui->renameColumnAction, !ui->tableWidget->getSelectedIndexes().isEmpty());
     });
 
 }
@@ -71,4 +73,9 @@ void MainWindow::saveAsFile()
         saveFile();
     }
     catch (domain_error) {}
+}
+
+void MainWindow::setEnabledAction(QAction* action, bool isEnabled)
+{
+    action->setEnabled(isEnabled);
 }

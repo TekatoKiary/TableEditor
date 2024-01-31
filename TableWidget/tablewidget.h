@@ -2,6 +2,7 @@
 #define TABLEWIDGET_H
 
 #include <FileManager/csvfilereader.h>
+#include <TableWidget/table.h>
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -9,7 +10,7 @@
 #include <QObject>
 #include <QTableWidget>
 
-class TableWidget : public QTableWidget
+class TableWidget: public QTableWidget
 {
     Q_OBJECT
 public:
@@ -18,16 +19,11 @@ public:
 
     TableWidget(QWidget *parent = nullptr);
 
-    void addRow(QStringList row);
-    QStringList getRow(int rowIndex);
     QList<QStringList> getRows();
     void setRow(QStringList row, int rowIndex);
     void setRows(QList<QStringList> rows);
 
-    void addTitle(QString columnName);
-    QString getTitle(int index);
     QStringList getTitles();
-    void setTitle(int columnIndex, QString title);
     void setTitles(QStringList titles);
 
     void setItem(int rowIndex, int columnIndex, QString textCell);
@@ -36,6 +32,7 @@ public:
 public slots:
     void addColumn();
     void addRow();
+//    void combineSelectedColumns();
     void copy();
     void cut();
     void paste();
@@ -43,14 +40,16 @@ public slots:
     void removeSelectedColumns();
     void removeSelectedRows();
     void renameColumn();
+    void tableChanged(QTableWidgetItem *item);
 private:
-    void addRowsFromRebasingFile(CsvFileReader* rebasingFileReader);
-    QStringList createNewRowBasedOnRebasingOne(QStringList oldRow, QStringList rebasingTitles);
-    QString getColumnNameWithDialog(QString title, QString label, QString text);
+    Table table;
+
+    QString getUserTitleWithDialog(QString title, QString label, QString text);
     bool getPermission(QString title, QString text);
     void pasteRowPart(QString row, int startColumnIndex, int rowIndex);
     QString takeRowPart(int rowIndex, int startColumnIndex, int endColumnIndex, bool is_removed=false);
     QString takePart(QTableWidgetSelectionRange range, bool is_removed=false);
+    void setViewTitles(QStringList titles);
 };
 
 #endif // TABLEWIDGET_H
