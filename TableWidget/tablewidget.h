@@ -43,6 +43,7 @@ public slots:
     void removeSelectedColumns();
     void removeSelectedRows();
     void renameColumn();
+    void moveColumn();
 private:
     void addRowsFromRebasingFile(CsvFileReader* rebasingFileReader);
     QStringList createNewRowBasedOnRebasingOne(QStringList oldRow, QStringList rebasingTitles);
@@ -51,6 +52,9 @@ private:
     void pasteRowPart(QString row, int startColumnIndex, int rowIndex);
     QString takeRowPart(int rowIndex, int startColumnIndex, int endColumnIndex, bool is_removed=false);
     QString takePart(QTableWidgetSelectionRange range, bool is_removed=false);
+    void swapColumns(int firstColumnIndex, int secondColumnIndex);
+    void swapTitles(int firstColumnIndex, int secondColumnIndex);
+    void swapItems(int firstColumnIndex, int secondColumnIndex);
 };
 
 #endif // TABLEWIDGET_H

@@ -11,6 +11,8 @@ TableWidget::TableWidget(QWidget *parent)
 void TableWidget::addRow()
 {
     setRowCount(rowCount() + 1);
+    for(int columnIndex = 0; columnIndex < columnCount(); columnIndex++)
+        setItem(rowCount() - 1, columnIndex, "");
 }
 
 void TableWidget::addRow(QStringList row)
@@ -77,7 +79,7 @@ void TableWidget::setTitle(int columnIndex, QString title)
 {
     if(columnIndex >= columnCount() || columnIndex < 0)
         return;
-    setHorizontalHeaderItem(currentColumn(), new QTableWidgetItem(enumerateString(columnIndex, title)));
+    setHorizontalHeaderItem(columnIndex, new QTableWidgetItem(enumerateString(columnIndex, title)));
 }
 
 void TableWidget::setTitles(QStringList titles)
@@ -235,5 +237,41 @@ void TableWidget::removeSelectedRows()
         QTableWidgetSelectionRange selectionRanges = selectedRanges().first();
         for (int index = selectionRanges.bottomRow(); index >= selectionRanges.topRow(); index--)
             removeRow(index);
+    }
+}
+
+void TableWidget::moveColumn()
+{
+    bool ok;
+    int oldColumnIndex = currentColumn();
+    int newColumnIndex = QInputDialog::getInt(parentWidget(), QString("Перемещение столбца %1").arg(oldColumnIndex + 1),
+                                              QString("Куда переместить столбец %1").arg(oldColumnIndex + 1),
+                                              oldColumnIndex + 1, 1, getTitles().count(), 1, &ok) - 1;
+    if(ok && oldColumnIndex != newColumnIndex)
+        swapColumns(oldColumnIndex, newColumnIndex);
+}
+
+void TableWidget::swapColumns(int firstColumnIndex, int secondColumnIndex)
+{
+    swapTitles(firstColumnIndex, secondColumnIndex);
+    swapItems(firstColumnIndex, secondColumnIndex);
+}
+
+void TableWidget::swapTitles(int firstColumnIndex, int secondColumnIndex)
+{
+    QString value = getTitle(firstColumnIndex);
+    setTitle(firstColumnIndex, getTitle(secondColumnIndex));
+    setTitle(secondColumnIndex, value);
+}
+
+void TableWidget::swapItems(int firstColumnIndex, int secondColumnIndex)
+{
+    auto a = getRows();
+    for(int rowIndex = 0; rowIndex < getRows().count(); rowIndex++)
+    {
+        QStringList row = getRow(rowIndex);
+        QString value = row[firstColumnIndex];
+        setItem(rowIndex, firstColumnIndex, row[secondColumnIndex]);
+        setItem(rowIndex, secondColumnIndex, value);
     }
 }

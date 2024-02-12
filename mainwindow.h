@@ -38,5 +38,6 @@ private:
     void setCurrentFileName(QString nameCurrentFile);
     void setSectionResizeModeInTitles();
     void setFilePath(QString newFilePath);
+    void setEnabledAction(QAction* action, bool isEnabled);
 };
 #endif // MAINWINDOW_H
